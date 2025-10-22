@@ -1,0 +1,180 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
+    <head th:fragment="head">
+        <title>[[#{aplicacion.titulo}]]</title>
+        <meta charset="UTF-8"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1"/>
+        <link th:href="@{/webjars/bootstrap/css/bootstrap.min.css}" rel="stylesheet"/>
+        <link th:href="@{/webjars/font-awesome/css/all.css}" rel="stylesheet"/>
+        <script th:src="@{/js/rutinas.js}"></script>
+        <script th:src="@{/webjars/jquery/jquery.min.js}"></script>
+        <script th:src="@{/webjars/popper.js/umd/popper.min.js}"></script>
+        <script th:src="@{/webjars/bootstrap/js/bootstrap.min.js}"></script>
+    </head>
+
+    <body>
+        <!-- HEADER + HOME CONTENT -->
+        <header th:fragment="header" class="header">
+            <!-- NAVBAR -->
+            <nav class="navbar navbar-expand-sm navbar-light bg-light border-bottom">
+                <div class="container">
+                    <a th:href="@{/}" class="navbar-brand fw-semibold">[[#{aplicacion.titulo}]]</a>
+                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse"
+                            aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+
+                    <div class="collapse navbar-collapse justify-content-between" id="navbarCollapse">
+                        <ul class="navbar-nav">
+                            <li class="nav-item px-2">
+                                <a class="nav-link" th:href="@{/}">[[#{plantilla.inicio}]]</a>
+                            </li>
+                            <li class="nav-item px-2">
+                                <a class="nav-link" th:href="@{/libro/listado}">[[#{plantilla.libros}]]</a>
+                            </li>
+                            <li class="nav-item px-2">
+                                <a class="nav-link" th:href="@{/contacto}">[[#{plantilla.sugerencias}]]</a>
+                            </li>
+                        </ul>
+                        <div id="resultBlock"></div>
+                    </div>
+                </div>
+            </nav>
+
+            <!-- HERO / ENCABEZADO INICIO -->
+            <section id="main-header" class="py-4 bg-primary text-white">
+                <div class="container">
+                    <div class="row align-items-center">
+                        <div class="col-lg-7">
+                            <h1 class="h2 mb-3">
+                                <i class="fa-solid fa-book-open-reader me-2"></i>
+                                [[#{inicio.tituloHero}]]
+                            </h1>
+                            <p class="mb-0">[[#{inicio.subtituloHero}]]</p>
+                        </div>
+                        <div class="col-lg-5 mt-3 mt-lg-0">
+                            <!-- Video/Imagen embebida con iframe -->
+                            <div class="ratio ratio-16x9 rounded overflow-hidden shadow-sm">
+                                <!-- Puedes cambiar el video a otro que prefieras -->
+                                <iframe
+                                    src="https://www.youtube.com/embed/vVkBwRx2XZA?si=5lmBpNwoBubxge7G"
+                                    title="[[#{inicio.videoTitulo}]]"
+                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                                    allowfullscreen>
+                                </iframe>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- CONTENIDO INICIO -->
+            <section class="py-5">
+                <div class="container">
+                    <div class="row g-4">
+                        <!-- NUEVO LIBRO (dinámico si viene en el modelo) -->
+                        <div class="col-lg-7">
+                            <div class="card h-100 shadow-sm">
+                                <div class="card-body">
+                                    <h2 class="h4 mb-3">
+                                        <i class="fa-solid fa-star me-2 text-warning"></i>
+                                        [[#{inicio.nuevoLibroTitulo}]]
+                                    </h2>
+
+                                    <!-- Dinámico -->
+                                    <div th:if="${libroNuevo != null}">
+                                        <h3 class="h5" th:text="${libroNuevo.titulo}">Título del libro</h3>
+                                        <p class="mb-1"><strong>[[#{libro.autor}]]:</strong> <span th:text="${libroNuevo.autor}">Autor</span></p>
+                                        <p class="mb-2" th:if="${libroNuevo.fechaPublicacion != null}">
+
+                                            <strong>[[#{libro.fechaPublicacion}]]:</strong>
+                                            <span th:if="${libroNuevo.fechaPublicacion != null}"
+                                                  th:text="${#dates.format(libroNuevo.fechaPublicacion, 'yyyy-MM-dd')}">2025-01-01</span>
+
+
+                                            <p class="text-muted" th:text="${#strings.abbreviate(libroNuevo.descripcion, 220)}">
+                                                Breve sinopsis del libro seleccionado…
+                                            </p>
+                                            <a class="btn btn-primary btn-sm"
+                                               th:href="@{/libro/detalle/{id}(id=${libroNuevo.id})}">
+                                                [[#{accion.verDetalles}]]
+                                            </a>
+                                    </div>
+
+                                    <!-- Fallback estático si no hay libroNuevo -->
+                                    <div th:if="${libroNuevo == null}">
+                                        <h3 class="h5">Cien años de soledad</h3>
+                                        <p class="mb-1"><strong>[[#{libro.autor}]]:</strong> Gabriel García Márquez</p>
+                                        <p class="text-muted">
+                                            Novela clásica de realismo mágico. Conoce a la familia Buendía y el mítico Macondo
+                                            en una obra que marcó la literatura latinoamericana.
+                                        </p>
+                                        <a class="btn btn-primary btn-sm" th:href="@{/libro/listado}">
+                                            [[#{accion.explorarLibros}]]
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- SOBRE LA BIBLIOTECA -->
+                        <div class="col-lg-5">
+                            <div class="card h-100 border-0 bg-light">
+                                <div class="card-body">
+                                    <h2 class="h5 mb-3">
+                                        <i class="fa-solid fa-building-columns me-2"></i>
+                                        [[#{inicio.sobreTitulo}]]
+                                    </h2>
+                                    <p>[[#{inicio.sobreTexto1}]]</p>
+                                    <p class="mb-3">[[#{inicio.sobreTexto2}]]</p>
+                                    <a class="btn btn-outline-primary btn-sm" th:href="@{/contacto}">
+                                        <i class="fa-regular fa-message me-1"></i> [[#{inicio.sugerenciasCta}]]
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </section>
+        </header>
+
+        <!-- FOOTER -->
+        <footer th:fragment="footer" class="p-2 mt-5 bg-dark text-white">
+            <p class="lead text-center m-0">[[#{plantilla.derechos}]] &COPY;</p>
+        </footer>
+
+        <!-- TOASTS -->
+        <section th:fragment="mostrarToast">
+            <div aria-live="polite" aria-atomic="true"
+                 class="position-fixed top-50 start-50 translate-middle" style="z-index: 1080;">
+                <div th:if="${error}" class="toast show" role="alert" aria-live="assertive" aria-atomic="true" data-bs-autohide="true">
+                    <div class="toast-header text-white bg-danger">
+                        <i class="fa-solid fa-bomb"></i>
+                        <strong class="ms-2">[[#{error}]]</strong>
+                    </div>
+                    <div class="toast-body">
+                        <p>[[${error}]]</p>
+                        <div class="mt-2 pt-2 border-top text-center">
+                            <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="toast">[[#{accion.cerrar}]]</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div th:if="${todoOk}" class="toast show" role="status" aria-live="polite" aria-atomic="true" data-bs-autohide="true">
+                    <div class="toast-header text-white bg-success">
+                        <i class="fa-solid fa-square-check"></i>
+                        <strong class="ms-2">[[#{atencion}]]</strong>
+                    </div>
+                    <div class="toast-body">
+                        <p>[[${todoOk}]]</p>
+                        <div class="mt-2 pt-2 border-top text-center">
+                            <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="toast">[[#{accion.cerrar}]]</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </body>
+</html>

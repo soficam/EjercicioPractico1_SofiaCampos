@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<!--
+Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this template
+-->
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+  <head th:replace="~{general/fragmentos :: head}"></head>
+  <body>
+    <header th:replace="~{general/fragmentos :: header}"></header>
+
+    <main class="container my-5">
+      <h2 class="mb-4">
+        <i class="fa-solid fa-envelope me-2 text-primary"></i>
+        Enviar sugerencia o queja
+      </h2>
+
+      <form th:action="@{/contacto/enviar}" th:object="${queja}" method="post" class="card shadow-sm p-4">
+        <div class="row g-3">
+          <div class="col-md-6">
+            <label class="form-label fw-semibold">Nombre</label>
+            <input type="text" th:field="*{nombreCliente}" class="form-control" placeholder="Tu nombre completo"/>
+          </div>
+
+          <div class="col-md-6">
+            <label class="form-label fw-semibold">Correo electrónico</label>
+            <input type="email" th:field="*{email}" class="form-control" placeholder="ejemplo@email.com"/>
+          </div>
+
+          <div class="col-md-6">
+            <label class="form-label fw-semibold">Teléfono</label>
+            <input type="text" th:field="*{telefono}" class="form-control" placeholder="506-8888-9999"/>
+          </div>
+
+          <div class="col-md-6">
+            <label class="form-label fw-semibold">Tipo de mensaje</label>
+            <select th:field="*{tipo}" class="form-select">
+              <option th:each="tipo : ${tiposContacto}"
+                      th:value="${tipo}"
+                      th:text="${tipo}">SUGERENCIA</option>
+            </select>
+          </div>
+
+          <div class="col-12">
+            <label class="form-label fw-semibold">Asunto</label>
+            <input type="text" th:field="*{asunto}" class="form-control" placeholder="Tema del mensaje"/>
+          </div>
+
+          <div class="col-12">
+            <label class="form-label fw-semibold">Mensaje</label>
+            <textarea th:field="*{mensaje}" class="form-control" rows="5" placeholder="Escribe tu mensaje..."></textarea>
+          </div>
+        </div>
+
+        <div class="mt-4 text-end">
+          <button type="submit" class="btn btn-primary">
+            <i class="fa-solid fa-paper-plane"></i> Enviar
+          </button>
+        </div>
+      </form>
+    </main>
+
+    <footer th:replace="~{general/fragmentos :: footer}"></footer>
+  </body>
+</html>
